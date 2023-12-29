@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from "vue";
-import { invoke } from "@tauri-apps/api/tauri";
+import { ref, watch, computed } from "vue";
 import { Metadata } from "../bindings/Metadata";
 
 enum Type {
@@ -15,61 +14,18 @@ export interface _Metadata {
     type: Type
 }
 
-let datas = reactive<Array<_Metadata>>([]);
-let installed_count = ref(0);
-
 let page = ref(0);
-let filter = defineProps({
+let props = defineProps({
     filter: String,
-    installed: Array<string>
+    installed: Array<string>,
+    datas: Array<_Metadata>
 });
 
-const emit = defineEmits<{
-    loaded: [metadatas: Array<_Metadata>]
-}>();
-
-await invoke<Array<Metadata>>("get_all_formulas", {}).then((r) => {
-    r.forEach((metadata) => {
-        datas.push({
-            data: metadata,
-            installed: false,
-            deprecated: false,
-            type: Type.Formula
-        });
-    })
-    emit('loaded', datas);
-}).catch((e) => console.error(e));
-
-// ŞU ANLIK STRUCT YOK BUNUN İÇİN
-// await invoke<Array<Metadata>>("get_all_casks", {}).then((r) => {
-//     r.forEach((metadata) => {
-//         datas.push({
-//             data: metadata,
-//             type: Type.Cask
-//         });
-//     })
-// }).catch((e) => console.error(e));
-
-watch(filter, async () => {
+watch(props, async () => {
     page.value = 0;
-    if (installed_count.value != filter.installed?.length) {
-        let a = 0;
-        filter.installed?.forEach((v) => {
-            a += 1;
-            if (v != "" && v.split(" ").length == 2) {
-                datas.forEach((d) => {
-                    if (d.data.name == v.split(" ")[0]) {
-                        d.installed = true;
-                        if (d.data.versions?.stable != v.split(" ")[1]) {
-                            d.deprecated = true;
-                        }
-                    }
-                })
-            }
-        })
-        installed_count.value = a;
-    }
 })
+
+let arr = computed(() => props.datas!.filter((d) => d.data.name?.startsWith(props.filter!)))
 
 </script>
 
@@ -78,15 +34,13 @@ watch(filter, async () => {
         <h1 class="text-xl text-left ml-0.5 text-stone-400 font-mono my-2">All awaiable Homebrew formulae/casks</h1>
         <div class="flex flex-row justify-between gap-2">
             <button v-if="page != 0" @click="page--"><i class="fa-solid fa-arrow-left"></i></button>
-            <button
-                v-if="datas.filter((d) => d.data.name?.startsWith((filter.filter != null) ? (filter.filter) : '')).length > (page + 1) * 20"
-                @click="page++"><i class="fa-solid fa-arrow-right"></i></button>
+            <button v-if="props && props.datas && arr.length > (page + 1) * 20" @click="page++"><i
+                    class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
     <div
-        class="overflow-scroll h-screen leading-loose container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
-        <template
-            v-for=" metadata  in  datas.filter((d) => d.data.name?.startsWith((filter.filter != null) ? (filter.filter) : '')).slice(page * 20, (page + 1) * 20)">
+        class="overflow-scroll leading-loose container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
+        <template v-for=" metadata  in arr.slice(page * 20, (page + 1) * 20)">
             <div class="group rounded-md bg-stone-300 h-16 transition-all delay-200 ease-in-out hover:h-40">
                 <div class="text-xs break-all text-left mt-1 mx-0.5 flex flex-row justify-between">
                     <span class="italic">

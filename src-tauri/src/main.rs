@@ -87,13 +87,34 @@ async fn get_all_casks() -> Result<Vec<metadata::Metadata>, String> {
     }
 }
 
+#[tauri::command]
+async fn get_info_formula(name: String) -> Result<info::Root, String> {
+    let client = reqwest::Client::new();
+    let response = client
+        .get(format!(
+            "https://formulae.brew.sh/api/formula/{}.json",
+            name
+        ))
+        .send()
+        .await
+        .unwrap();
+    match response.status() {
+        reqwest::StatusCode::OK => match response.json::<info::Root>().await {
+            Ok(parsed) => Ok(parsed),
+            Err(e) => Err(format!("parse err {}", e)),
+        },
+        _ => Err(format!("status not ok")),
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_installed_formulas,
             get_installed_casks,
             get_all_formulas,
-            get_all_casks
+            get_all_casks,
+            get_info_formula
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

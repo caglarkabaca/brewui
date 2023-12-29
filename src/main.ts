@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 // import "./styles.css";
-import App from "./App.vue";
+import FakeApp from "./FakeApp.vue";
 import "./index.css"
 
-createApp(App).mount("#app");
+createApp(FakeApp).mount("#app");

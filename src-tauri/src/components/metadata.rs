@@ -3,7 +3,7 @@ use ts_rs::TS;
 
 #[derive(TS)]
 #[ts(export)]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Versions {
     stable: Option<String>,
     head: Option<String>,
