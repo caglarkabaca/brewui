@@ -5,8 +5,11 @@ import Installed from "./components/Installed.vue";
 import List from "./components/List.vue";
 
 import { ref } from "vue";
+import { _Metadata } from "./components/List.vue";
+
 let filter = ref("");
 let installed = ref<string[]>([]);
+let metadatas = ref<Array<_Metadata>>([]);
 
 </script>
 
@@ -20,16 +23,16 @@ let installed = ref<string[]>([]);
       <div class="overflow-scroll h-screen leading-loose">
         <h1 class="text-center text-stone-400">Installed</h1>
         <Suspense>
-          <Installed :filter="filter" @loaded="(r) => r.forEach((x) => installed.push(x))" />
+          <Installed :filter="filter" :metadatas="metadatas" @loaded="(r) => r.forEach((x) => installed.push(x))" />
           <template #fallback>
             <h2>Fetching..</h2>
           </template>
         </Suspense>
       </div>
     </div>
-    <div class="basis-3/4 lg:basis-4/5 overflow-scroll h-screen leading-loose">
+    <div class="basis-3/4 lg:basis-4/5">
       <Suspense>
-        <List :filter="filter" :installed="installed" />
+        <List :filter="filter" :installed="installed" @loaded="((datas: _Metadata[]) => metadatas = datas)" />
         <template #fallback>
           <h2>Fetching..</h2>
         </template>

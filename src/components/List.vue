@@ -8,7 +8,7 @@ enum Type {
     Cask
 }
 
-type _Metadata = {
+export interface _Metadata {
     data: Metadata,
     installed: boolean,
     deprecated: boolean,
@@ -24,6 +24,10 @@ let filter = defineProps({
     installed: Array<string>
 });
 
+const emit = defineEmits<{
+    loaded: [metadatas: Array<_Metadata>]
+}>();
+
 await invoke<Array<Metadata>>("get_all_formulas", {}).then((r) => {
     r.forEach((metadata) => {
         datas.push({
@@ -33,6 +37,7 @@ await invoke<Array<Metadata>>("get_all_formulas", {}).then((r) => {
             type: Type.Formula
         });
     })
+    emit('loaded', datas);
 }).catch((e) => console.error(e));
 
 // ŞU ANLIK STRUCT YOK BUNUN İÇİN
@@ -56,7 +61,6 @@ watch(filter, async () => {
                     if (d.data.name == v.split(" ")[0]) {
                         d.installed = true;
                         if (d.data.versions?.stable != v.split(" ")[1]) {
-                            console.log(d.data.versions?.stable, v.split(" ")[1])
                             d.deprecated = true;
                         }
                     }
@@ -79,7 +83,8 @@ watch(filter, async () => {
                 @click="page++"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
-    <div class="container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
+    <div
+        class="overflow-scroll h-screen leading-loose container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
         <template
             v-for=" metadata  in  datas.filter((d) => d.data.name?.startsWith((filter.filter != null) ? (filter.filter) : '')).slice(page * 20, (page + 1) * 20)">
             <div class="group rounded-md bg-stone-300 h-16 transition-all delay-200 ease-in-out hover:h-40">
@@ -103,7 +108,8 @@ watch(filter, async () => {
                     <p class="text-center">---</p>
                     <p>License: {{ metadata.data.license }}</p>
                     <p class="text-center my-0.5"><button
-                            class="border rounded-sm w-1/4 transition-all delay-75 hover:border-transparent hover:bg-stone-200 border-stone-500 bg-transparent text-gray-500 font-bold">Install</button>
+                            class="border rounded-sm w-1/4 transition-all delay-75 hover:border-transparent hover:bg-stone-200 border-stone-500 bg-transparent text-gray-500 font-bold">{{
+                                (metadata.deprecated) ? 'Update' : 'Install' }}</button>
                     </p>
                 </div>
             </div>
