@@ -5,8 +5,8 @@ use ts_rs::TS;
 #[ts(export)]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Versions {
-    stable: Option<String>,
-    head: Option<String>,
+    pub stable: Option<String>,
+    pub head: Option<String>,
 }
 
 #[derive(TS)]
@@ -21,13 +21,25 @@ pub struct Dependencies {
 #[ts(export)]
 #[derive(Serialize, Deserialize)]
 pub struct Metadata {
-    name: Option<String>,
-    full_name: Option<String>,
-    desc: Option<String>,
-    license: Option<String>,
-    homepage: Option<String>,
-    versions: Option<Versions>,
-    head_dependencies: Option<Dependencies>,
-    outdated: bool,
-    deprecated: bool,
+    pub name: Option<String>,
+    pub full_name: Option<String>,
+    pub desc: Option<String>,
+    pub license: Option<String>,
+    pub homepage: Option<String>,
+    pub versions: Option<Versions>,
+    pub head_dependencies: Option<Dependencies>,
+    pub outdated: bool,
+    pub deprecated: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct MetadataCask {
+    pub token: Option<String>,
+    pub full_token: Option<String>,
+    pub name: Option<Vec<String>>,
+    pub desc: Option<String>,
+    pub homepage: Option<String>,
+    pub version: Option<String>,
+    pub deprecated: bool,
+    pub disabled: bool,
 }

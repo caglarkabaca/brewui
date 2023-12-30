@@ -9,15 +9,16 @@ let props = defineProps({
 });
 
 let info = ref<Root>();
+let is_cask = ref(false);
 
 watch(props, async () => {
     if (props.name! !== '') {
-        let model = { name: props.name!, data: info };
+        let model = { name: props.name!, data: info, isCask: is_cask };
         await Load_Info(model);
     }
 })
 
-let model = { name: props.name!, data: info };
+let model = { name: props.name!, data: info, isCask: is_cask };
 await Load_Info(model);
 
 </script>
@@ -31,7 +32,9 @@ await Load_Info(model);
         </div>
         <span class="text-stone-400">to install: </span>
         <span class="text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
-            <span class="ml-0.5 font-thin">$</span> brew <span class="italic">install</span> {{ info?.name }}
+            <span class="ml-0.5 font-thin">$</span> brew <span class="italic">install <span
+                    v-if="is_cask">--cask</span></span> {{
+                        info?.name }}
         </span>
         <span class="text-stone-400 ml-1 mr-1">or</span>
         <button class="bg-stone-400 px-1.5 rounded text-sm italic font-light text-stone-300">Click</button>

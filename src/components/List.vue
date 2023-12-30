@@ -48,7 +48,9 @@ let arr = computed(() => props.datas!.filter((d) => d.data.name?.startsWith(prop
                         <span class="border-b-2 rounded border-gray-700 mr-2">{{ metadata.data.full_name }}</span>
                         <i v-if="metadata.installed"
                             :class="(!metadata.deprecated) ? 'fa-solid fa-check' : 'fa-regular fa-circle-up'"></i>
-                        <span v-if="metadata.type == Type.Formula" class="font-bold text-stone-400 ml-0.5">--formula</span>
+                        <span v-if="metadata.type == Type.Formula" class="font-bold text-stone-400 ml-0.5">
+                            {{ (metadata.type == Type.Formula) ? '--formula' : '--cask' }}
+                        </span>
                         <span v-if="metadata.type == Type.Cask" class="font-bold text-stone-400 ml-0.5">--cask</span>
                     </span>
                     <span class="italic text-stone-200 rounded-md bg-stone-400 py-0.5 px-0.5 font-light"
@@ -61,7 +63,7 @@ let arr = computed(() => props.datas!.filter((d) => d.data.name?.startsWith(prop
                 <div
                     class="my-2 mx-0.5 invisible transition-all ease-in delay-200 text-transparent font-mono text-xs group-hover:text-gray-500 group-hover:visible">
                     <p class="text-center">---</p>
-                    <p>License: {{ metadata.data.license }}</p>
+                    <p v-if="metadata.data.license">License: {{ metadata.data.license }}</p>
                     <!-- <p class="text-center my-0.5"><button
                             class="border rounded-sm w-1/4 transition-all delay-75 hover:border-transparent hover:bg-stone-200 border-stone-500 bg-transparent text-gray-500 font-bold">{{
                                 (metadata.deprecated) ? 'Update' : 'Install' }}</button>

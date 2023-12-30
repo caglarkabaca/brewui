@@ -10,10 +10,10 @@ import App from './App.vue';
         <App />
         <template #fallback>
             <div class="flex h-screen justify-center items-center">
-                <div class="mx-auto">
+                <div class="mx-auto items-center">
                     <button type="button" disabled>
-                        <svg class="animate-spin h-5 w-5 text-stone-300" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24">
+                        <svg class="block w-full mx-auto animate-spin h-10 text-stone-300"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                             </circle>
                             <path class="opacity-75" fill="currentColor"
@@ -21,6 +21,9 @@ import App from './App.vue';
                             </path>
                         </svg>
                     </button>
+                    <h1 class="text-stone-400 text-2xl text-center">Loading..</h1>
+                    <h1 class="text-stone-300 text-lg text-center">thanks for using my app</h1>
+                    <h1 class="text-stone-300 text-md italic text-center">@caglarkabaca</h1>
                 </div>
             </div>
         </template>
