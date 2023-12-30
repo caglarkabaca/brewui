@@ -1,25 +1,37 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { _Metadata } from './List.vue';
 import { Root } from '../bindings/Root.ts';
 import { Load_Info } from '../utils.ts';
 
 let props = defineProps({
-    name: String
+    name: String,
+    installed_formulas: Array<String>,
+    installed_casks: Array<String>,
+    metadata: Array<_Metadata>
 });
+let deprecatedies = computed(() => props.metadata!.filter((p) => p.deprecated))
 
 let info = ref<Root>();
 let is_cask = ref(false);
+
+let installed = computed(() => props.installed_formulas!.map((r) => r.split(" ")[0]).concat(props.installed_casks!.map((r) => r.split(" ")[0])).filter((r) => r !== ''));
+let is_installed = ref(false);
+let need_to_update = ref(false);
 
 watch(props, async () => {
     if (props.name! !== '') {
         let model = { name: props.name!, data: info, isCask: is_cask };
         await Load_Info(model);
+        is_installed.value = installed.value.filter((r) => r === props.name!).length > 0;
+        need_to_update.value = is_installed.value && deprecatedies.value.filter((m) => m.data.name === props.name).length > 0;
     }
 })
 
 let model = { name: props.name!, data: info, isCask: is_cask };
 await Load_Info(model);
+is_installed.value = installed.value.filter((r) => r === props.name!).length > 0;
+need_to_update.value = is_installed.value && deprecatedies.value.filter((m) => m.data.name === props.name).length > 0;
 
 </script>
 
@@ -30,14 +42,29 @@ await Load_Info(model);
             <span v-if="info?.name != info?.full_name" class="ml-2 text-xs font-bold italic text-stone-400">{{
                 info?.full_name }}</span>
         </div>
-        <span class="text-stone-400">to install: </span>
-        <span class="text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
-            <span class="ml-0.5 font-thin">$</span> brew <span class="italic">install <span
-                    v-if="is_cask">--cask</span></span> {{
+        <button>
+            <span class="text-stone-400">to <template v-if="is_installed">un</template>install: </span>
+            <span class="text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
+                <span class="ml-0.5 font-thin">$</span> brew <span class="italic"><template
+                        v-if="is_installed">un</template>install <span v-if="is_cask">--cask</span></span>
+                {{
+                    info?.name }}
+            </span>
+            <span class="text-xs text-stone-400"> click to execute </span>
+        </button>
+        <p v-if="need_to_update">
+            <button>
+                <span class="text-stone-400">to update: &nbsp;&nbsp;&nbsp;</span>
+                <span class="text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
+                    <span class="ml-0.5 font-thin">$</span> brew <span class="italic">upgrade <span
+                            v-if="is_cask">--cask</span></span>
+                    {{
                         info?.name }}
-        </span>
-        <span class="text-stone-400 ml-1 mr-1">or</span>
-        <button class="bg-stone-400 px-1.5 rounded text-sm italic font-light text-stone-300">Click</button>
+                </span>
+                <span class="text-xs text-stone-400"> click to execute </span>
+            </button>
+        </p>
+
         <p class="text-left text-stone-400 text-xl">-----</p>
         <p class="text-sm italic">{{ info?.desc }}</p>
         <p class="text-sm mt-1.5 leading-3">License: <span class="font-bold text-stone-400 align-middle inline-block">{{

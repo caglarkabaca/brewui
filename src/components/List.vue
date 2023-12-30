@@ -42,7 +42,7 @@ let arr = computed(() => props.datas!.filter((d) => d.data.name?.startsWith(prop
         class="overflow-scroll leading-loose container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
         <template v-for=" metadata  in   arr.slice(page * 20, (page + 1) * 20)  ">
             <button @click="$emit('emit-show', metadata.data.name)"
-                class="group rounded-md bg-stone-300 h-16 transition-all delay-200 ease-in-out hover:h-40">
+                class="group rounded-md bg-stone-300 h-24 transition-all delay-200 ease-in-out hover:h-40">
                 <div class="text-xs break-all text-left mt-1 mx-0.5 flex flex-row justify-between">
                     <span class="italic">
                         <span class="border-b-2 rounded border-gray-700 mr-2">{{ metadata.data.full_name }}</span>

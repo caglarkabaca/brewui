@@ -77,7 +77,7 @@ export async function Load_Metadata(installed_formulas: string[], installed_cask
 
 export async function Load_Info(model: { name: string; data: Ref<Root | undefined>, isCask: Ref<boolean | undefined> }) {
     let is_cask = false;
-    await invoke<Root>("get_info_formula", { name: model.name }).then((e) => model.data.value = e).catch((e) => is_cask = true);
+    await invoke<Root>("get_info_formula", { name: model.name }).then((e) => model.data.value = e).catch(() => is_cask = true);
     if (is_cask) {
         await invoke<Root>("get_info_cask", { name: model.name }).then((e) => model.data.value = e).catch((e) => console.error(e));
     }

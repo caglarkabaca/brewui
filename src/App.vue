@@ -42,7 +42,8 @@ await Load_Metadata(installed_formulas.value, installed_casks.value, metadatas.v
       <div v-else class="flex h-screen justify-center items-center">
         <div class="mx-auto h-5/6 w-4/5 bg-stone-300 shadow-2xl overflow-y-auto">
           <Suspense>
-            <Details :name="display" />
+            <Details :name="display" :installed_formulas="installed_formulas" :installed_casks="installed_casks"
+              :metadata="metadatas" />
             <template #fallback>
               <button type="button" disabled>
                 <svg class="animate-spin h-15 w-15 text-stone-300" xmlns="http://www.w3.org/2000/svg" fill="none"
