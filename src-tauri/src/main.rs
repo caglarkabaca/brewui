@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 
-use async_process::Command;
+use async_process::{Command, ExitStatus};
 use reqwest;
 
 mod components;
@@ -175,6 +175,24 @@ async fn get_info_cask(name: String) -> Result<info::Root, String> {
     }
 }
 
+#[tauri::command]
+async fn execute_command(args: Vec<String>) -> Result<String, String> {
+    let mut brew = Command::new("brew");
+    brew.args(args);
+    let output = brew.output().await;
+
+    match output {
+        Ok(res) => {
+            if res.status.success() {
+                return Ok(String::from_utf8(res.stdout).unwrap());
+            } else {
+                return Err(String::from_utf8(res.stderr).unwrap());
+            }
+        }
+        Err(e) => return Err(format!("cmd err {}", e)),
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -183,7 +201,8 @@ fn main() {
             get_all_formulas,
             get_all_casks,
             get_info_formula,
-            get_info_cask
+            get_info_cask,
+            execute_command
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

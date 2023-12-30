@@ -38,28 +38,28 @@ let arr = computed(() => props.datas!.filter((d) => d.data.name?.startsWith(prop
                     class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
-    <div
-        class="overflow-scroll leading-loose container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
+    <div class="container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
         <template v-for=" metadata  in   arr.slice(page * 20, (page + 1) * 20)  ">
             <button @click="$emit('emit-show', metadata.data.name)"
-                class="group rounded-md bg-stone-300 h-24 transition-all delay-200 ease-in-out hover:h-40">
-                <div class="text-xs break-all text-left mt-1 mx-0.5 flex flex-row justify-between">
-                    <span class="italic">
+                class="group rounded-md flex flex-col items-center bg-stone-300 h-24 transition-all delay-200 ease-in-out hover:h-40">
+                <div class="text-xs w-full break-all text-left mt-1 mx-0.5 flex flex-row justify-between">
+                    <span class="italic ml-1">
                         <span class="border-b-2 rounded border-gray-700 mr-2">{{ metadata.data.full_name }}</span>
                         <i v-if="metadata.installed"
                             :class="(!metadata.deprecated) ? 'fa-solid fa-check' : 'fa-regular fa-circle-up'"></i>
-                        <span v-if="metadata.type == Type.Formula" class="font-bold text-stone-400 ml-0.5">
+                        <span class="font-bold text-stone-400 ml-0.5">
                             {{ (metadata.type == Type.Formula) ? '--formula' : '--cask' }}
                         </span>
-                        <span v-if="metadata.type == Type.Cask" class="font-bold text-stone-400 ml-0.5">--cask</span>
                     </span>
-                    <span class="italic text-stone-200 rounded-md bg-stone-400 py-0.5 px-0.5 font-light"
+                    <p class="italic text-stone-200 rounded-md bg-stone-400 mr-1 py-0.5 px-0.5 font-light"
                         :class="(metadata.data.deprecated) ? 'line-through' : ''">v{{
                             metadata.data.versions?.stable
-                        }}{{ (metadata.data.outdated) ? '!' : '' }}</span>
+                        }}{{ (metadata.data.outdated) ? '!' : '' }}</p>
                 </div>
-                <p class="text-xs break-all italic mx-0.5 mt-0.5 text-gray-500 line-clamp-2 group-hover:line-clamp-none">
-                    {{ metadata.data.desc }}</p>
+                <p
+                    class="w-full pb-8 text-xs break-all italic mx-0.5 mt-0.5 text-gray-500 line-clamp-2 group-hover:line-clamp-none">
+                    {{ metadata.data.desc }}
+                </p>
                 <div
                     class="my-2 mx-0.5 invisible transition-all ease-in delay-200 text-transparent font-mono text-xs group-hover:text-gray-500 group-hover:visible">
                     <p class="text-center">---</p>

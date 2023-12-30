@@ -42,7 +42,7 @@ export async function Load_Metadata(installed_formulas: string[], installed_cask
         r.forEach((metadata) => {
             if (metadata.name != null) {
                 let installed = installed_formulas.concat(installed_casks).filter((p) => p.split(" ")[0] == metadata.name!).length > 0;
-                let deprecated = installed_formulas.concat(installed_casks).filter((p) => installed && p.split(" ")[1] == metadata.versions!.stable).length > 0;
+                let deprecated = installed_formulas.concat(installed_casks).filter((p) => installed && p.split(" ")[1] !== metadata.versions!.stable).length > 0;
                 metadatas.push({
                     data: metadata,
                     installed: installed,

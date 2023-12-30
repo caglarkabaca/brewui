@@ -3,6 +3,10 @@ import { watch, ref, computed } from 'vue';
 import { _Metadata } from './List.vue';
 import { Root } from '../bindings/Root.ts';
 import { Load_Info } from '../utils.ts';
+import { invoke } from '@tauri-apps/api';
+import CmdLoading from './CmdLoading.vue';
+
+const emit = defineEmits(['refresh']);
 
 let props = defineProps({
     name: String,
@@ -22,7 +26,13 @@ let need_to_update = ref(false);
 watch(props, async () => {
     if (props.name! !== '') {
         let model = { name: props.name!, data: info, isCask: is_cask };
+
+        is_executing.value = true;
+        executing_command.value = "info " + ((is_cask) ? '--cask' : '--formula') + ' ' + props.name;
         await Load_Info(model);
+        executing_command.value = "";
+        is_executing.value = false;
+
         is_installed.value = installed.value.filter((r) => r === props.name!).length > 0;
         need_to_update.value = is_installed.value && deprecatedies.value.filter((m) => m.data.name === props.name).length > 0;
     }
@@ -33,36 +43,53 @@ await Load_Info(model);
 is_installed.value = installed.value.filter((r) => r === props.name!).length > 0;
 need_to_update.value = is_installed.value && deprecatedies.value.filter((m) => m.data.name === props.name).length > 0;
 
+let install_command = (is_installed: boolean, is_cask: boolean) =>
+    (((is_installed) ? 'un' : '') + 'install ' + ((is_cask) ? '--cask' : '--formula') + ' ' + info.value?.name);
+
+let is_executing = ref(false);
+let executing_command = ref("");
+
+async function execute() {
+    await invoke('execute_command', { args: executing_command.value.split(" ") })
+        .then((o) => console.log(o))
+        .catch((e) => console.error(e));
+    emit('refresh');
+    is_executing.value = false;
+}
+
 </script>
 
 <template>
-    <div class="ml-4 mr-4 my-4 font-mono">
+    <div v-if="is_executing">
+        <CmdLoading :cmd="executing_command" :name="info?.name!" />
+    </div>
+    <div v-else class="ml-4 mr-4 my-4 font-mono">
         <div>
             <span class="text-4xl font-bold">{{ info?.name }}</span>
             <span v-if="info?.name != info?.full_name" class="ml-2 text-xs font-bold italic text-stone-400">{{
                 info?.full_name }}</span>
         </div>
-        <button>
+        <p>
             <span class="text-stone-400">to <template v-if="is_installed">un</template>install: </span>
-            <span class="text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
+            <button @click="executing_command = install_command(is_installed, is_cask); is_executing = true; execute();"
+                class="hover:animate-pulse text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
                 <span class="ml-0.5 font-thin">$</span> brew <span class="italic"><template
                         v-if="is_installed">un</template>install <span v-if="is_cask">--cask</span></span>
                 {{
                     info?.name }}
-            </span>
-            <span class="text-xs text-stone-400"> click to execute </span>
-        </button>
-        <p v-if="need_to_update">
-            <button>
-                <span class="text-stone-400">to update: &nbsp;&nbsp;&nbsp;</span>
-                <span class="text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
-                    <span class="ml-0.5 font-thin">$</span> brew <span class="italic">upgrade <span
-                            v-if="is_cask">--cask</span></span>
-                    {{
-                        info?.name }}
-                </span>
-                <span class="text-xs text-stone-400"> click to execute </span>
             </button>
+            <span class="text-xs text-stone-400"> click to execute </span>
+        </p>
+        <p v-if="need_to_update">
+            <span class="text-stone-400">to update: &nbsp;&nbsp;&nbsp;</span>
+            <button
+                class="hover:animate-pulse text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
+                <span class="ml-0.5 font-thin">$</span> brew <span class="italic">upgrade <span
+                        v-if="is_cask">--cask</span></span>
+                {{
+                    info?.name }}
+            </button>
+            <span class="text-xs text-stone-400"> click to execute </span>
         </p>
 
         <p class="text-left text-stone-400 text-xl">-----</p>

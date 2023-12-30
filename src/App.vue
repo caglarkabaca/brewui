@@ -21,13 +21,19 @@ let installed_casks = ref([""]);
 await Load_Installed(installed_formulas, installed_casks);
 await Load_Metadata(installed_formulas.value, installed_casks.value, metadatas.value);
 
+async function Reload_Installed() {
+  installed_formulas.value = [""];
+  installed_casks.value = [""];
+  await Load_Installed(installed_formulas, installed_casks);
+}
+
 </script>
 
 <template>
   <div class="flex flex-row h-screen overflow-hidden">
     <div class="basis-1/4 lg:basis-1/5 py-2 mx-2 pr-2 border-r-4 border-stone-300 font-mono">
       <div class="flex pb-2">
-        <button class="flex-none" @click="display = ''"><i class="fa-solid fa-bars"></i></button>
+        <button class="flex-none" @click="display = ''; filter = ''"><i class="fa-solid fa-bars"></i></button>
         <input type="text" v-model="filter" class="mx-auto w-10/12 rounded-md">
       </div>
       <div class="overflow-scroll h-screen leading-loose">
@@ -36,14 +42,14 @@ await Load_Metadata(installed_formulas.value, installed_casks.value, metadatas.v
           @emit-show="(s) => display = s" />
       </div>
     </div>
-    <div class="basis-3/4 lg:basis-4/5">
+    <div class="basis-3/4 lg:basis-4/5 overflow-auto leading-loose h-screen mr-2">
       <List v-if="display === ''" :filter="filter" :datas="metadatas" :installed="installed"
         @emit-show="(s) => display = s" />
       <div v-else class="flex h-screen justify-center items-center">
         <Suspense>
           <div class="mx-auto h-5/6 w-4/5 bg-stone-300 shadow-2xl overflow-y-auto">
             <Details :name="display" :installed_formulas="installed_formulas" :installed_casks="installed_casks"
-              :metadata="metadatas" />
+              :metadata="metadatas" @refresh="Reload_Installed();" />
           </div>
           <template #fallback>
             <div class="mx-auto items-center">
