@@ -10,6 +10,10 @@ enum Type {
     Cask
 }
 
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function Load_Installed(formulas: Ref<string[]>, casks: Ref<string[]>) {
     interface Response {
         name: string[];
@@ -59,9 +63,6 @@ export async function Load_Metadata(installed_formulas: string[], installed_cask
                     deprecated: !deprecated,
                     type: Type.Cask
                 });
-                if (metadata.name === 'raycast') {
-                    console.log(metadata);
-                }
             }
         })
     }).catch((e) => console.error(e));

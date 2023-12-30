@@ -40,14 +40,16 @@ await Load_Metadata(installed_formulas.value, installed_casks.value, metadatas.v
       <List v-if="display === ''" :filter="filter" :datas="metadatas" :installed="installed"
         @emit-show="(s) => display = s" />
       <div v-else class="flex h-screen justify-center items-center">
-        <div class="mx-auto h-5/6 w-4/5 bg-stone-300 shadow-2xl overflow-y-auto">
-          <Suspense>
+        <Suspense>
+          <div class="mx-auto h-5/6 w-4/5 bg-stone-300 shadow-2xl overflow-y-auto">
             <Details :name="display" :installed_formulas="installed_formulas" :installed_casks="installed_casks"
               :metadata="metadatas" />
-            <template #fallback>
-              <button type="button" disabled>
-                <svg class="animate-spin h-15 w-15 text-stone-300" xmlns="http://www.w3.org/2000/svg" fill="none"
-                  viewBox="0 0 24 24">
+          </div>
+          <template #fallback>
+            <div class="mx-auto items-center">
+              <button class="mx-auto">
+                <svg class="block w-full mx-auto animate-spin h-10 text-stone-300" xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                   </circle>
                   <path class="opacity-75" fill="currentColor"
@@ -55,9 +57,11 @@ await Load_Metadata(installed_formulas.value, installed_casks.value, metadatas.v
                   </path>
                 </svg>
               </button>
-            </template>
-          </Suspense>
-        </div>
+              <h1 class="text-stone-400 text-2xl text-center">Loading..</h1>
+              <h1 class="text-stone-300 text-md italic text-center">@caglarkabaca</h1>
+            </div>
+          </template>
+        </Suspense>
       </div>
     </div>
   </div>
