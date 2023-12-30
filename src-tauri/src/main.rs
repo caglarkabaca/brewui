@@ -1,17 +1,19 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::collections::HashMap;
+use std::{collections::HashMap, str::Lines};
 
-use async_process::{Command, ExitStatus};
+use async_process::{Command, Stdio};
+use futures_lite::{io::BufReader, prelude::*};
 use reqwest;
 
 mod components;
 use components::{
     info::Bottle,
-    metadata::{Metadata, MetadataCask, Versions},
+    metadata::{Metadata, Versions},
     *,
 };
+use tauri::Window;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -176,21 +178,28 @@ async fn get_info_cask(name: String) -> Result<info::Root, String> {
 }
 
 #[tauri::command]
-async fn execute_command(args: Vec<String>) -> Result<String, String> {
+async fn execute_command(window: Window, args: Vec<String>) -> Result<(), String> {
     let mut brew = Command::new("brew");
     brew.args(args);
-    let output = brew.output().await;
+    window.emit("test", true).unwrap();
 
-    match output {
-        Ok(res) => {
-            if res.status.success() {
-                return Ok(String::from_utf8(res.stdout).unwrap());
-            } else {
-                return Err(String::from_utf8(res.stderr).unwrap());
+    let child = brew.stdout(Stdio::piped()).spawn();
+
+    match child {
+        Ok(mut child) => {
+            let mut lines = BufReader::new(child.stdout.take().unwrap()).lines();
+            while let Some(line) = lines.next().await {
+                match line {
+                    Ok(output) => {
+                        window.emit("test", output).unwrap();
+                    }
+                    Err(_) => return Err(format!("line err")),
+                }
             }
         }
-        Err(e) => return Err(format!("cmd err {}", e)),
+        Err(_) => return Err(format!("spawn err")),
     }
+    Ok(())
 }
 
 fn main() {

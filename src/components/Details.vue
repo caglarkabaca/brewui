@@ -5,6 +5,7 @@ import { Root } from '../bindings/Root.ts';
 import { Load_Info } from '../utils.ts';
 import { invoke } from '@tauri-apps/api';
 import CmdLoading from './CmdLoading.vue';
+import { listen } from '@tauri-apps/api/event';
 
 const emit = defineEmits(['refresh']);
 
@@ -58,13 +59,22 @@ async function execute() {
         .catch((e) => console.error(e));
     emit('refresh');
     is_executing.value = false;
+    output.value = ""
 }
+
+let output = ref("");
+
+listen('test', (event) => {
+    if (typeof event.payload === 'string') {
+        output.value += (event.payload + '\n')
+    }
+});
 
 </script>
 
 <template>
     <div v-if="is_executing">
-        <CmdLoading :cmd="executing_command" :name="info?.name!" />
+        <CmdLoading :cmd="executing_command" :name="info?.name!" :output="output" />
     </div>
     <div v-else class="ml-4 mr-4 my-4 font-mono">
         <div>
