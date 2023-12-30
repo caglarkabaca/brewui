@@ -25,6 +25,12 @@ async function Reload_Installed() {
   installed_formulas.value = [""];
   installed_casks.value = [""];
   await Load_Installed(installed_formulas, installed_casks);
+  metadatas.value.forEach((metadata) => {
+    let _installed = installed_formulas.value.concat(installed_casks.value).filter((p) => p.split(" ")[0] == metadata.data.name!).length > 0;
+    let _deprecated = installed_formulas.value.concat(installed_casks.value).filter((p) => installed && p.split(" ")[1] === metadata.data.versions!.stable).length > 0;
+    metadata.installed = _installed;
+    metadata.deprecated = !_deprecated;
+  })
 }
 
 </script>

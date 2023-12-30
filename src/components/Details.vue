@@ -46,6 +46,9 @@ need_to_update.value = is_installed.value && deprecatedies.value.filter((m) => m
 let install_command = (is_installed: boolean, is_cask: boolean) =>
     (((is_installed) ? 'un' : '') + 'install ' + ((is_cask) ? '--cask' : '--formula') + ' ' + info.value?.name);
 
+let update_command = (is_cask: boolean) =>
+    ('upgrade ' + ((is_cask) ? '--cask ' : '') + info.value?.name);
+
 let is_executing = ref(false);
 let executing_command = ref("");
 
@@ -82,8 +85,8 @@ async function execute() {
         </p>
         <p v-if="need_to_update">
             <span class="text-stone-400">to update: &nbsp;&nbsp;&nbsp;</span>
-            <button
-                class="hover:animate-pulse text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
+            <button @click="executing_command = update_command(is_cask); is_executing = true; execute();"
+                class=" hover:animate-pulse text-sm font-bold bg-stone-400 text-gray-700 shadow-md border rounded border-stone-500 pr-0.5">
                 <span class="ml-0.5 font-thin">$</span> brew <span class="italic">upgrade <span
                         v-if="is_cask">--cask</span></span>
                 {{
