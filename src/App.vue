@@ -37,9 +37,10 @@ await Load_Metadata(installed_formulas.value, installed_casks.value, metadatas.v
       </div>
     </div>
     <div class="basis-3/4 lg:basis-4/5">
-      <List v-if="display === ''" :filter="filter" :datas="metadatas" :installed="installed" />
+      <List v-if="display === ''" :filter="filter" :datas="metadatas" :installed="installed"
+        @emit-show="(s) => display = s" />
       <div v-else class="flex h-screen justify-center items-center">
-        <div class="mx-auto h-5/6 w-3/5 bg-stone-300 shadow-2xl">
+        <div class="mx-auto h-5/6 w-3/5 bg-stone-300 shadow-2xl overflow-y-auto">
           <Suspense>
             <Details :name="display" />
             <template #fallback>

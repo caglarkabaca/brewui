@@ -2,4 +2,4 @@
 import type { Dependencies } from "./Dependencies";
 import type { Versions } from "./Versions";
 
-export interface Metadata { name: string | null, full_name: string | null, desc: string | null, license: string | null, homepage: string | null, versions: Versions | null, head_dependencies: Dependencies | null, outdated: boolean, deprecated: boolean }
+export interface Metadata { name: string | null, full_name: string | null, desc: string | null, license: string | null, homepage: string | null, versions: Versions | null, head_dependencies: Dependencies | null, outdated: boolean, deprecated: boolean, }

@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api";
 
 import { _Metadata } from "./components/List.vue";
 import { Metadata } from "./bindings/Metadata";
+import { Root } from "./bindings/Root.ts";
 
 enum Type {
     Formula,
@@ -47,4 +48,8 @@ export async function Load_Metadata(installed_formulas: string[], installed_cask
             }
         })
     }).catch((e) => console.error(e));
+}
+
+export async function Load_Info(model: { name: string; data: Ref<Root | undefined> }) {
+    await invoke<Root>("get_info_formula", { name: model.name }).then((e) => model.data.value = e).catch((e) => console.error(e));
 }
