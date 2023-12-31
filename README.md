@@ -2,14 +2,12 @@
 
 Simple UI for Homebrew package manager powered by Tauri and Vue.
 
-## Notes
-
-This project is accualty my first project with Tauri and also Vue, and i can't say that i am very good at Rust and **espicially** in Typescript, but i think i did pretty good job for first time.
-Because of its made of Rust, it is very normal to think its **blazingly fast** but unfortunatly it isnt :( but one that it will.
+> This project is actually my first project using Tauri and Vue, and i can't say that I am very good at Rust and **especially** in Typescript, but I think I did a pretty good job for the first time.
+Since it's written in Rust, you might think it's **blazingly fast** but unfortunately it isn't :( . One day it will though.
 
 ## Build
 
-Just download the sources and run with **npm** thats should be enough.
+Just download the source and run with **npm** that should be enough.
 
 ## Screenshots
 
