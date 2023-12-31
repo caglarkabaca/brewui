@@ -2,6 +2,10 @@
 import { computed } from "vue";
 import { _Metadata } from "./List.vue";
 
+const emit = defineEmits({
+  'emit-show': String
+})
+
 const props = defineProps({
   filter: String,
   metadatas: Array<_Metadata>,
@@ -18,7 +22,7 @@ let deprecatedies = computed(() => props.metadatas!.filter((p) => p.deprecated))
   <ul>
     <template v-for="item in   formulas  ">
       <li v-if="item != '' && item.startsWith(props.filter!)">
-        <button class=" flex flex-row justify-between" @click="$emit('emit-show', item.split(' ')[0])">
+        <button class=" flex flex-row justify-between" @click="emit('emit-show', item.split(' ')[0])">
           <div class="text-sm text-left w-max transition-all delay-100 hover:text-lg">
             <span class="mb-0 pb-0">{{ item.split(" ")[0] }}</span><i
               v-if="deprecatedies.filter((d) => d.data.name! === item.split(' ')[0]).length > 0"
@@ -34,7 +38,7 @@ let deprecatedies = computed(() => props.metadatas!.filter((p) => p.deprecated))
   <ul>
     <template v-for="item in   casks  ">
       <li v-if="item != '' && item.startsWith(props.filter!)">
-        <button class=" flex flex-row justify-between" @click="$emit('emit-show', item.split(' ')[0])">
+        <button class=" flex flex-row justify-between" @click="emit('emit-show', item.split(' ')[0])">
           <div class=" text-sm text-left w-max transition-all delay-100 hover:text-lg">
             <span class="mb-0 pb-0">{{ item.split(" ")[0] }}</span><i
               v-if="deprecatedies.filter((d) => d.data.name! === item.split(' ')[0]).length > 0"

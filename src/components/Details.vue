@@ -74,7 +74,7 @@ listen('test', (event) => {
 
 <template>
     <div v-if="is_executing">
-        <CmdLoading :cmd="executing_command" :name="info?.name!" :output="output" />
+        <CmdLoading class="w-full" :cmd="executing_command" :name="info?.name!" :output="output" />
     </div>
     <div v-else class="ml-4 mr-4 my-4 font-mono">
         <div>

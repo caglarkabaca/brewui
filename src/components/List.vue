@@ -21,6 +21,10 @@ let props = defineProps({
     datas: Array<_Metadata>
 });
 
+const emit = defineEmits({
+    'emit-show': String
+})
+
 watch(props, async () => {
     page.value = 0;
 })
@@ -40,7 +44,7 @@ let arr = computed(() => props.datas!.filter((d) => d.data.name?.startsWith(prop
     </div>
     <div class="container m-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cals-4 gap-4 font-mono">
         <template v-for=" metadata  in   arr.slice(page * 20, (page + 1) * 20)  ">
-            <button @click="$emit('emit-show', metadata.data.name)"
+            <button @click="emit('emit-show', metadata.data.name)"
                 class="group rounded-md flex flex-col items-center bg-stone-300 h-24 transition-all delay-200 ease-in-out hover:h-40">
                 <div class="text-xs w-full break-all text-left mt-1 mx-0.5 flex flex-row justify-between">
                     <span class="italic ml-1">

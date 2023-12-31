@@ -11,8 +11,8 @@ const _args = prop.cmd?.split(" ");
 </script>
 
 <template>
-    <div class="flex pt-[35%] justify-center items-center ">
-        <div class="mx-auto items-center">
+    <div class="flex pt-[35%] justify-center items-center">
+        <div class="mx-auto items-center ">
             <button type="button" disabled>
                 <svg class="block w-full mx-auto animate-spin h-10 text-stone-500" xmlns="http://www.w3.org/2000/svg"
                     fill="none" viewBox="0 0 24 24">
@@ -25,7 +25,8 @@ const _args = prop.cmd?.split(" ");
                 <h1 class="text-stone-500 font-thin text-2xl text-center">{{ _args![0] }}ing {{ prop.name }}</h1>
                 <h1 class="text-stone-400 font-thin text-lg text-center">executing...
                     $ <span class="font-normal italic">brew {{ prop.cmd }}</span></h1>
-                <p class="text-gray-400 leading-4 break-all mx-5 font-mono text-xs font-extralight text-center">
+                <p
+                    class="text-gray-400 leading-4 break-all mx-5 font-mono text-xs font-extralight text-center whitespace-pre">
                     {{ prop.output }}
                 </p>
             </button>
