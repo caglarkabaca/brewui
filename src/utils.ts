@@ -10,10 +10,6 @@ enum Type {
     Cask
 }
 
-function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export async function Load_Installed(formulas: Ref<string[]>, casks: Ref<string[]>) {
     interface Response {
         name: string[];

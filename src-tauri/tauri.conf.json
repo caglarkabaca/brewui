@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "brewui",
-    "version": "0.0.0"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,7 +20,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.caglarkabaca.dev",
       "icon": [
         "icons/brew.png",
         "icons/brew.svg",
